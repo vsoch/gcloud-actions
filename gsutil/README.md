@@ -1,14 +1,15 @@
-# GitHub Action for Google Cloud
+# GitHub Action for Gsutil
 
-The GitHub Actions for [Google Cloud Platform](https://cloud.google.com/) and wraps the [gcloud SDK](https://cloud.google.com/sdk/) to enable common Google Cloud commands. This is a thin wrapper around the `gcloud` utility.
+The GitHub Actions for [gsutil](https://cloud.google.com/storage/docs/gsutil) are provided here.
 
 ## Usage
-An example workflow to list clusters on Google Cloud Platform:
+
+An example workflow to list the contents of a bucket:
 
 ```
-workflow "Run gcloud command" {
+workflow "Run gsutil command" {
   on = "push"
-  resolves = "GCP List Clusters"
+  resolves = "List Bucket"
 }
 
 action "GCP Authenticate" {
@@ -16,10 +17,13 @@ action "GCP Authenticate" {
   secrets = ["GCLOUD_AUTH"]
 }
 
-action "GCP List Clusters" {
+action "List Bucket" {
   needs = ["GCP Authenticate"]
-  uses = "actions/gcloud/cli@master"
-  args = "container clusters list"
+  uses = "actions/gcloud/gsutil@master"
+  env = {
+    GOOGLE_BUCKET  = "the-best-bucket"
+  }
+  args = "ls gs://${GOOGLE_BUCKET}"
 }
 ```
 
